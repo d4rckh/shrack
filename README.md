@@ -3,6 +3,8 @@
 
 Shrack is a very fast python coded hash brute forcer. It can brute force: md5 and sha256 types. I hope, with the help of the community, we will make this project better
 
+**Requirements**: python3
+
 # Example Usage
 ```bash
 $ python3 shrack.py --type md5 --string 2dccd1ab3e03990aea77359831c85ca2 --wordlist wordlist.txt
