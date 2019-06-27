@@ -27,7 +27,7 @@ wordlist = args.wordlist
 def encrypt(hash_type, hash_string):
     if hash_type == "md5":
         return (hashlib.md5(hash_string.encode()).hexdigest())
-    if hashed_type == "sha256":
+    if hash_type == "sha256":
         return (hashlib.sha256(hash_string.encode()).hexdigest())
 
 def crack_hash(hash_type, hash_string):
