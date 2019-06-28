@@ -1,5 +1,5 @@
 # SHRACK
-*🚀 Fast hash brute forcer*
+*🚀 Fast hash dictionary attack*
 
 Shrack is a very fast python coded hash brute forcer. It can brute force: md5 and sha256 types. I hope, with the help of the community, we will make this project better
 
