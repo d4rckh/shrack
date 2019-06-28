@@ -23,7 +23,7 @@ parser.add_argument('--wordlist', help='Wordlist', required=True)
 parser.add_argument('--v',help="(true/false) Show more information while cracking", default=False, type=lambda x: (str(x).lower() == 'true'))
 args = parser.parse_args()
 
-supported_types = ('md5', 'sha256')
+supported_types = ('md5', 'sha256', 'sha1', 'sha224')
 hash_string = args.string
 hash_type = args.type
 wordlist = args.wordlist
@@ -33,6 +33,10 @@ def encrypt(hash_type, hash_string):
         return (hashlib.md5(hash_string.encode()).hexdigest())
     if hash_type == "sha256":
         return (hashlib.sha256(hash_string.encode()).hexdigest())
+    if hash_type == "sha1":
+        return (hashlib.sha1(hash_string.encode()).hexdigest())
+    if hash_type == "sha224":
+        return (hashlib.sha224(hash_string.encode()).hexdigest())
 
 def crack_hash(hash_type, hash_string):
     if hash_type in supported_types:
