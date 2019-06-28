@@ -1,7 +1,7 @@
 import hashlib
 import sys
 import argparse
-
+import printlogo 
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -11,6 +11,10 @@ class bcolors:
     ENDC = '\033[0m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
+
+print("Starting Shrack v0.0.1")
+print(" ")
+printlogo.pl()
 
 parser = argparse.ArgumentParser(description='SHRACK: The hash cracker')
 parser.add_argument('--type', help='Hash type', required=True)
