@@ -1,7 +1,11 @@
+import datetime
 import hashlib
 import sys
 import argparse
-import printlogo 
+import time
+########################
+import printlogo
+
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -13,8 +17,16 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 print("Starting Shrack v0.0.1")
+time.sleep(1)
 print(" ")
 printlogo.pl()
+print(" ")
+print(" ")
+print(" ")
+ts = time.time()
+st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S') 
+print("Starting at: " + st)
+time.sleep(1)
 
 parser = argparse.ArgumentParser(description='SHRACK: The hash cracker')
 parser.add_argument('--type', help='Hash type', required=True)
@@ -48,7 +60,9 @@ def crack_hash(hash_type, hash_string):
                 hashed_guess = encrypt(hash_type, guess) 
                 if hashed_guess == hash_string:
                     print(bcolors.OKGREEN + "\nFOUND MATCH\n" + bcolors.ENDC)
-                    print(hash_string + ":" + guess + " (cracked after " + str(guesses.index(guess)) + " guesses)")
+                    ets = time.time()
+                    etstss = (ets-ts) - 1
+                    print(hash_string + ":" + guess + " (cracked after " + str(guesses.index(guess)) + " guesses in " + str(etstss) + " seconds)")
                     break
                 else:
                     if args.v:
