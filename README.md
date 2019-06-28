@@ -1,7 +1,7 @@
 # SHRACK
 *🚀 Fast hash dictionary attack*
 
-Shrack is a very fast python coded hash cracker. It can crack: md5 and sha256 types by giving a list. I hope, with the help of the community, we will make this project better
+Shrack is a very fast python coded hash cracker. It can crack: **md5, sha256, sha1, sha224 or sha384** types by giving a list. I hope, with the help of the community, we will make this project better
 
 **Requirements**: python3
 
@@ -9,7 +9,7 @@ Shrack is a very fast python coded hash cracker. It can crack: md5 and sha256 ty
 ```bash
 $ python3 shrack.py --type md5 --string 2dccd1ab3e03990aea77359831c85ca2 --wordlist wordlist.txt
 ```
-Using the `type` argument we provide the hash type, it can be at the moment md5 or sha256
+Using the `type` argument we provide the hash type, it can be at the moment md5, sha256, sha1, sha224 or sha384
 
 Using the `string` argument we provide the hash that we need to crack
 
