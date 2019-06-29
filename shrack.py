@@ -39,6 +39,8 @@ supported_types = ('md5', 'sha256', 'sha1', 'sha224', 'sha384')
 hash_string = args.string
 hash_type = args.type
 wordlist = args.wordlist
+found = False
+result = "(none)"
 
 def encrypt(hash_type, hash_string):
     if hash_type == "md5":
@@ -52,6 +54,11 @@ def encrypt(hash_type, hash_string):
     if hash_type == "sha384":
         return (hashlib.sha384(hash_string.encode()).hexdigest())
 
+def summary(guess):
+    print("HashString : " + hash_string)
+    print("HashType   : " + hash_type)
+    print("Result     : " + guess)
+
 def crack_hash(hash_type, hash_string):
     if hash_type in supported_types:
         with open(wordlist, 'r') as wl:
@@ -59,15 +66,28 @@ def crack_hash(hash_type, hash_string):
             for guess in guesses:
                 hashed_guess = encrypt(hash_type, guess) 
                 if hashed_guess == hash_string:
-                    print(bcolors.OKGREEN + "\nFOUND MATCH\n" + bcolors.ENDC)
+                    print(bcolors.OKGREEN + "\nFOUND MATCH:\n" + bcolors.ENDC)
                     ets = time.time()
                     etstss = (ets-ts) - 1
-                    print(hash_string + ":" + guess + " (cracked after " + str(guesses.index(guess)) + " guesses in " + str(etstss) + " seconds)")
+                    print(hash_string + ":" + bcolors.BOLD + bcolors.OKGREEN + guess + bcolors.ENDC + " (cracked after " + str(guesses.index(guess)) + " guesses in " + str(etstss) + " seconds)")
+                    found = True
+                    result = guess
                     break
                 else:
                     if args.v:
                         print(bcolors.FAIL + "Fail \"" + guess + "\"" + bcolors.ENDC + " (" + str(guesses.index(guess) + 1) + "/" + str(guesses.__len__()) + ")")
-
+            print("End of the list.")
+            if found:
+                print('\nMD5 OF THE RESULT:')
+                print(encrypt('md5', result))
+                print('\nSHA1 OF THE RESULT:')
+                print(encrypt('sha1', result))
+                print('\nSHA224 OF THE RESULT:')
+                print(encrypt('sha224', result))
+                print('\nSHA384 OF THE RESULT:')
+                print(encrypt('sha384', result))
+            print("\n\nSummary:\n\n")
+            summary(result)              
     else: 
         print("hash type \"" + hash_type + "\" is not supported.")
         print("")
