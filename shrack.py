@@ -25,7 +25,7 @@ print(" ")
 print(" ")
 ts = time.time()
 st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S') 
-print("Starting at: " + st)
+print("Starting cracking at: " + st)
 time.sleep(1)
 
 parser = argparse.ArgumentParser(description='SHRACK: The hash cracker')
@@ -39,9 +39,6 @@ supported_types = ('md5', 'sha256', 'sha1', 'sha224', 'sha384')
 hash_string = args.string
 hash_type = args.type
 wordlist = args.wordlist
-found = False
-result = "(none)"
-
 def encrypt(hash_type, hash_string):
     if hash_type == "md5":
         return (hashlib.md5(hash_string.encode()).hexdigest())
@@ -63,6 +60,8 @@ def crack_hash(hash_type, hash_string):
     if hash_type in supported_types:
         with open(wordlist, 'r') as wl:
             guesses = wl.read().split('\n')
+            found = False
+            result = "(none)"
             for guess in guesses:
                 hashed_guess = encrypt(hash_type, guess) 
                 if hashed_guess == hash_string:
@@ -70,7 +69,7 @@ def crack_hash(hash_type, hash_string):
                     ets = time.time()
                     etstss = (ets-ts) - 1
                     print(hash_string + ":" + bcolors.BOLD + bcolors.OKGREEN + guess + bcolors.ENDC + " (cracked after " + str(guesses.index(guess)) + " guesses in " + str(etstss) + " seconds)")
-                    found = True
+                    found = (True)
                     result = guess
                     break
                 else:
@@ -78,14 +77,15 @@ def crack_hash(hash_type, hash_string):
                         print(bcolors.FAIL + "Fail \"" + guess + "\"" + bcolors.ENDC + " (" + str(guesses.index(guess) + 1) + "/" + str(guesses.__len__()) + ")")
             print("End of the list.")
             if found:
-                print('\nMD5 OF THE RESULT:')
-                print(encrypt('md5', result))
-                print('\nSHA1 OF THE RESULT:')
-                print(encrypt('sha1', result))
-                print('\nSHA224 OF THE RESULT:')
-                print(encrypt('sha224', result))
-                print('\nSHA384 OF THE RESULT:')
-                print(encrypt('sha384', result))
+                if args.v:
+                    print('\nMD5 OF THE RESULT:')
+                    print(encrypt('md5', result))
+                    print('\nSHA1 OF THE RESULT:')
+                    print(encrypt('sha1', result))
+                    print('\nSHA224 OF THE RESULT:')
+                    print(encrypt('sha224', result))
+                    print('\nSHA384 OF THE RESULT:')
+                    print(encrypt('sha384', result))
             print("\n\nSummary:\n\n")
             summary(result)              
     else: 
