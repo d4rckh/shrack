@@ -78,7 +78,7 @@ def crack_hash(hash_type, hash_string):
         with open(wordlist, 'r') as wl:
             guesses = wl.read().split('\n')
             for guess in guesses:
-                hashed_guess = encrypt(hash_type, guess)
+                hashed_guess = encrypt(hash_type, guess).lower()
                 print(hashed_guess)
                 if hashed_guess == hash_string:
                     print(bcolors.OKGREEN + "\nFOUND MATCH:\n" + bcolors.ENDC)
@@ -98,7 +98,7 @@ def crack_hash(hash_type, hash_string):
 
 
 for hashstr in hashes:
-    crack_hash(hashstr.split(':')[1], hashstr.split(":")[0])
+    crack_hash(hashstr.split(':')[1], hashstr.split(":")[0].lower())
 
 if len(cracked) != 0:
     print(bcolors.OKGREEN + "\nRESULTS:\n" + bcolors.ENDC)
