@@ -17,27 +17,49 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 print("Starting Shrack v0.0.1")
-time.sleep(1)
 print(" ")
 printlogo.pl()
 print(" ")
 print(" ")
 print(" ")
-ts = time.time()
-st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S') 
-print("Starting cracking at: " + st)
-time.sleep(1)
 
 parser = argparse.ArgumentParser(description='SHRACK: The hash cracker')
-parser.add_argument('--type', help='Hash type', required=True)
-parser.add_argument('--string', help='Hash string', required=True)
-parser.add_argument('--wordlist', help='Wordlist', required=True)
+parser.add_argument('--type', help='Hash type', required=False)
+parser.add_argument('--string', help='Hash string', required=False)
+parser.add_argument('--hashes', help='Hashes file', required=False)
+parser.add_argument('--wordlist', help='Wordlist', required=False)
 parser.add_argument('--v',help="(true/false) Show more information while cracking", default=False, type=lambda x: (str(x).lower() == 'true'))
 args = parser.parse_args()
 
+hashes = []
+cracked = []
+
+if args.string:
+    if args.type:
+        hashes.append(args.string + ":" + args.type + ":cli")
+    else:
+        print("You have been specified the hash, but not the type, please use the \"--type\" param to specify the type")
+        exit()
+
+if args.hashes:
+    if args.string:
+        print("Warning: you specified a list of hashes and a hash from the cli, both of them will be cracked")
+    with open(args.hashes) as hashlist:
+        hashlist = hashlist.read()
+        hasheslines = hashlist.split('\n')
+        for hashline in hasheslines:
+            hashline = hashline.replace('\\', '').replace(' ', '')
+            if hashline:
+                hashes.append(hashline)
+            else:
+                print('Warning: detected empty line. Ignoring')
+
+
+if len(hashes) == 0:
+    print('No hashes imported. Exiting...')
+    exit()
+
 supported_types = ('md5', 'sha256', 'sha1', 'sha224', 'sha384')
-hash_string = args.string
-hash_type = args.type
 wordlist = args.wordlist
 def encrypt(hash_type, hash_string):
     if hash_type == "md5":
@@ -51,43 +73,22 @@ def encrypt(hash_type, hash_string):
     if hash_type == "sha384":
         return (hashlib.sha384(hash_string.encode()).hexdigest())
 
-def summary(guess):
-    print("HashString : " + hash_string)
-    print("HashType   : " + hash_type)
-    print("Result     : " + guess)
-
 def crack_hash(hash_type, hash_string):
     if hash_type in supported_types:
         with open(wordlist, 'r') as wl:
             guesses = wl.read().split('\n')
-            found = False
-            result = "(none)"
             for guess in guesses:
-                hashed_guess = encrypt(hash_type, guess) 
+                hashed_guess = encrypt(hash_type, guess)
+                print(hashed_guess)
                 if hashed_guess == hash_string:
                     print(bcolors.OKGREEN + "\nFOUND MATCH:\n" + bcolors.ENDC)
-                    ets = time.time()
-                    etstss = (ets-ts) - 1
-                    print(hash_string + ":" + bcolors.BOLD + bcolors.OKGREEN + guess + bcolors.ENDC + " (cracked after " + str(guesses.index(guess)) + " guesses in " + str(etstss) + " seconds)")
-                    found = (True)
-                    result = guess
+                    print(hash_string + ":" + bcolors.BOLD + bcolors.OKGREEN + guess + bcolors.ENDC)
+                    cracked.append(hash_string + ":" + guess)
                     break
                 else:
                     if args.v:
                         print(bcolors.FAIL + "Fail \"" + guess + "\"" + bcolors.ENDC + " (" + str(guesses.index(guess) + 1) + "/" + str(guesses.__len__()) + ")")
-            print("End of the list.")
-            if found:
-                if args.v:
-                    print('\nMD5 OF THE RESULT:')
-                    print(encrypt('md5', result))
-                    print('\nSHA1 OF THE RESULT:')
-                    print(encrypt('sha1', result))
-                    print('\nSHA224 OF THE RESULT:')
-                    print(encrypt('sha224', result))
-                    print('\nSHA384 OF THE RESULT:')
-                    print(encrypt('sha384', result))
-            print("\n\nSummary:\n\n")
-            summary(result)              
+            print("End of the list.")            
     else: 
         print("hash type \"" + hash_type + "\" is not supported.")
         print("")
@@ -95,4 +96,11 @@ def crack_hash(hash_type, hash_string):
         for hashtype in supported_types:
             print("  " + hashtype)
 
-crack_hash(hash_type, hash_string)
+
+for hashstr in hashes:
+    crack_hash(hashstr.split(':')[1], hashstr.split(":")[0])
+
+if len(cracked) != 0:
+    print(bcolors.OKGREEN + "\nRESULTS:\n" + bcolors.ENDC)
+    for crackedhash in cracked:
+        print(crackedhash)
